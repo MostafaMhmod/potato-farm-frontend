@@ -21,16 +21,20 @@ class App extends Component {
       stakingBalance: "0",
       loading: true,
       usdAllowanceApproved: false,
+      showUsdMintButton: false,
+      web3: null,
     };
   }
   async componentDidMount() {
     await this.loadWeb3();
     await this.loadBlockchainData();
     await this.checkAllowance();
+    await this.checkUsdBalance();
   }
   async loadWeb3() {
     if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum);
+      this.state.web3 = new Web3(window.ethereum);
+      window.web3 = this.state.web3;
       await window.ethereum.enable();
     } else if (window.web3) {
       window.web3 = new Web3(window.web3.currentProvider);
@@ -87,6 +91,13 @@ class App extends Component {
     if (usdTokenAllowance >= this.state.usdTokenBalance)
       this.setState({ usdAllowanceApproved: true });
   }
+  checkUsdBalance() {
+    if (this.state.stakingBalance > 0)
+      return this.setState({ showUsdMintButton: false });
+    if (this.state.usdTokenBalance > 0)
+      return this.setState({ showUsdMintButton: false });
+    return this.setState({ showUsdMintButton: true });
+  }
   approveUsdTokensAllowance = async () => {
     await this.state.usdToken.methods
       .approve(this.state.simpleChef._address, this.state.usdTokenBalance)
@@ -112,6 +123,14 @@ class App extends Component {
       .send({ from: this.state.account })
       .on("transactionHash", (hash) => {});
   };
+  handleMintUsd = async (e) => {
+    this.state.usdToken.methods
+      .mint(this.state.account, this.state.web3.utils.toWei("1000", "Ether"))
+      .send({ from: this.state.account })
+      .on("transactionHash", (hash) => {
+        this.setState({ showUsdMintButton: false });
+      });
+  };
   render() {
     let content;
     if (this.state.loading) {
@@ -135,6 +154,18 @@ class App extends Component {
       <div className="App">
         <Navbar account={this.state.account} />
         <div className="container-fluid mt-5">
+          <div className="row col-6 offset-3">
+            {this.state.showUsdMintButton ? (
+              <button
+                className="btn btn-success btn-block btn-lg0"
+                onClick={this.handleMintUsd}
+              >
+                Mint Test USD
+              </button>
+            ) : (
+              ""
+            )}
+          </div>
           <div className="row">
             <vault
               role="main"
