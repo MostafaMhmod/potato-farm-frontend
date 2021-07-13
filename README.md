@@ -1,6 +1,6 @@
 # Potato Farm Frontend
 
-The Frontend implementation of the [Simple farm](https://github.com/MostafaMhmod/potato-farm) repositry , written using the React library 
+The Frontend implementation of the [Simple farm](https://github.com/MostafaMhmod/potato-farm) repository , written using the React library 
 
 App is contuniously deployed on netlify at:
 https://musing-poincare-bdc351.netlify.app
