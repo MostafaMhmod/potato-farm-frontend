@@ -52,6 +52,9 @@ class App extends Component {
 
     const networkId = await web3.eth.net.getId();
 
+    if (networkId !== 3)
+      window.alert("Please switch to the Roposten Network from Metamask");
+
     // Load usdToken
     const usdToken = new web3.eth.Contract(usdAbi.abi, addresses.usd);
     this.setState({ usdToken });
@@ -167,21 +170,7 @@ class App extends Component {
             )}
           </div>
           <div className="row">
-            <vault
-              role="main"
-              className="col-lg-12 ml-auto mr-auto"
-              style={{ maxWidth: "600px" }}
-            >
-              <div className="content mr-auto ml-auto">
-                <a
-                  href="http://www.dappuniversity.com/bootcamp"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                ></a>
-
-                {content}
-              </div>
-            </vault>
+            <div className="content mr-auto ml-auto">{content}</div>
           </div>
         </div>
       </div>
